@@ -1,8 +1,8 @@
 "use strict";
 
 const { ServiceBroker } = require("moleculer");
-const Service = require("../../../moleculer-db/index");
-const ModuleChecker = require("../../../moleculer-db/test/checker");
+const Service = require("moleculer-db");
+const ModuleChecker = require("moleculer-db/test/checker");
 const PrismaAdapter = require("../../index");
 const { PrismaClient } = require("@prisma/client");
 
@@ -158,7 +158,7 @@ checker.add("UPDATE BY QUERY", () => adapter.updateMany({ votes: { lt: 5 }}, {
 	$set: { status: false }
 }), count => {
 	console.log("Updated: ", count);
-	return count === 2;
+	return count === 1;
 });
 
 // Remove by query
