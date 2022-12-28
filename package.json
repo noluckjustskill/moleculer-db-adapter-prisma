@@ -1,0 +1,53 @@
+{
+  "name": "moleculer-db-adapter-prisma",
+  "version": "0.1.17",
+  "description": "Prisma adapter for Moleculer DB service",
+  "main": "index.js",
+  "types": "./index.d.ts",
+  "scripts": {
+    "prisma:gen": "prisma generate",
+    "prisma:push": "prisma db push",
+    "dev": "nodemon examples/index.js",
+    "ci": "jest --watch",
+    "test": "jest --coverage",
+    "lint": "eslint --ext=.js src test"
+  },
+  "keywords": [
+    "microservice",
+    "moleculer",
+    "orm",
+    "database",
+    "prisma"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:noluckjustskill/moleculer-db-adapter-prisma.git"
+  },
+  "homepage": "https://github.com/noluckjustskill/moleculer-db-adapter-prisma#readme",
+  "author": "Artemiy Yeskov",
+  "license": "MIT",
+  "peerDependencies": {
+    "moleculer": "^0.12.0 || ^0.13.0 || ^0.14.0",
+    "prisma": "^4.8.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.8.0"
+  },
+  "devDependencies": {
+    "eslint": "8.30.0",
+    "jest": "29.3.1",
+    "jest-cli": "29.3.1",
+    "moleculer": "^0.14.27",
+    "prisma": "^4.8.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coveragePathIgnorePatterns": [
+      "/node_modules/",
+      "/test/services/"
+    ]
+  },
+  "engines": {
+    "node": ">= 12.x.x"
+  }
+}
