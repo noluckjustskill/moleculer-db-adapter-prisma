@@ -1,6 +1,6 @@
 ![Moleculer logo](http://moleculer.services/images/banner.png)
 
-# moleculer-db-adapter-prisma [![NPM version](https://img.shields.io/npm/v/moleculer-db-adapter-prisma.svg)](https://www.npmjs.com/package/moleculer-db-adapter-prisma)
+# moleculer-db-adapter-prisma [![NPM version](https://img.shields.io/npm/v/moleculer-db-adapter-prisma.svg)](https://www.npmjs.com/package/moleculer-db-adapter-prisma) [![Unit tests](https://github.com/noluckjustskill/moleculer-db-adapter-prisma/actions/workflows/unit-tests.yml/badge.svg?branch=main)](https://github.com/noluckjustskill/moleculer-db-adapter-prisma/actions/workflows/unit-tests.yml) [![Integration tests](https://github.com/noluckjustskill/moleculer-db-adapter-prisma/actions/workflows/integration-tests.yml/badge.svg?branch=main)](https://github.com/noluckjustskill/moleculer-db-adapter-prisma/actions/workflows/integration-tests.yml)
 
 SQL adapter for Moleculer DB service with [Prisma](https://www.prisma.io).
 

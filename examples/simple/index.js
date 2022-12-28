@@ -51,7 +51,6 @@ async function start() {
 	await broker.start()
 		.delay(500)
 		.then(() => checker.execute())
-		.catch(console.error)
 		.then(() => broker.stop())
 		.then(() => checker.printTotal());
 }
