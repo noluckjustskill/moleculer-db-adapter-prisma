@@ -1,6 +1,6 @@
 {
   "name": "moleculer-db-adapter-prisma",
-  "version": "0.1.17",
+  "version": "0.1.20",
   "description": "Prisma adapter for Moleculer DB service",
   "main": "index.js",
   "types": "./index.d.ts",
