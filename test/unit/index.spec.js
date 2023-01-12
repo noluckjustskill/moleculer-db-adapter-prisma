@@ -370,6 +370,23 @@ describe("Test PrismaAdapter", () => {
         });
     });
 
+    describe("call buildInclude", () => {
+      it("empty input", () => {
+        const object = adapter.buildInclude();
+        expect(object).toBe(undefined);
+      });
+
+      it("flat input", () => {
+        const object = adapter.buildInclude(['a', 'b']);
+        expect(object).toEqual({ a: true, b: true });
+      });
+
+      it("nested input", () => {
+        const object = adapter.buildInclude(['a', 'b.c.d']);
+        expect(object).toEqual({ a: true, b: { include: { c: { include: { d: true } } } } });
+      });
+    });
+
     it("call entityToObject", () => {
       const object = adapter.entityToObject(fakeModel);
       expect(object).toBe(fakeModel);

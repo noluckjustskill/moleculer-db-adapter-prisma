@@ -147,11 +147,12 @@ class PrismaDbAdapter {
 	 * @param {any} _id
 	 * @returns {Promise}
 	 */
-	async findById(id) {
+	async findById(id, populate) {
 		return this.model.findUnique({
 			where: {
 				id,
 			},
+      include: this.buildInclude(populate),
 		});
 	}
 
@@ -161,7 +162,7 @@ class PrismaDbAdapter {
 	 * @param {Array} idList
 	 * @returns {Promise}
 	 */
-	async findByIds(idList) {
+	async findByIds(idList, populate) {
 		if (_.isEmpty(idList)) {
 			return [];
 		}
@@ -169,7 +170,8 @@ class PrismaDbAdapter {
 		return this.model.findMany({
 			where: {
 				id: { in: idList },
-			}
+			},
+      include: this.buildInclude(populate),
 		});
 	}
 
@@ -317,12 +319,8 @@ class PrismaDbAdapter {
 			Object.assign(q.where, params.query);
 		}
 
-		if (!_.isEmpty(params.populates) && !isCounting) {
-			q.include = params.populates.reduce((acc, curr) => {
-				acc[curr] = true;
-
-				return acc;
-			}, {});
+		if (params.populate && !isCounting) {
+			q.include = this.buildInclude(params.populate);
 		}
 
 		// Sort
@@ -381,6 +379,29 @@ class PrismaDbAdapter {
 		/* istanbul ignore next*/
 		return [];
 	}
+
+  /**
+   * 
+   * @param {Array} populate field(s) to populate
+   * @returns Object for Prisma includes
+   */
+  buildInclude(populate) {
+    if (_.isEmpty(populate)) {
+      return;
+    }
+
+    return _.reduce(populate, (acc, curr) => {
+      const [field, ...nestedFields] = curr.split(".");
+
+      if (!nestedFields.length) {
+        acc[field] = true;
+      } else {
+        acc[field] = { include: this.buildInclude([nestedFields.join(".")]) };
+      }
+
+      return acc;
+    }, {});
+  }
 
 	/**
 	 * For compatibility only.

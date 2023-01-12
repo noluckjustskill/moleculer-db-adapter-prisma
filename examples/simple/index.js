@@ -35,6 +35,7 @@ const checker = new ModuleChecker(19);
 // Start checks
 async function start() {
 	const client = new PrismaClient();
+	await client.$executeRaw`DROP TABLE IF EXISTS Comment`;
 	await client.$executeRaw`DROP TABLE IF EXISTS Post`;
 	await client.$executeRaw`
     CREATE TABLE Post (
@@ -44,8 +45,21 @@ async function start() {
       votes INT(10) NOT NULL,
       status TINYINT(1) NOT NULL,
       createdAt DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+
       PRIMARY KEY (id) USING BTREE
-    );
+    ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+  `;
+  await client.$executeRaw`
+    CREATE TABLE Comment (
+      id VARCHAR(36) NOT NULL,
+      message VARCHAR(255) NOT NULL,
+      postId VARCHAR(36) NULL,
+
+      PRIMARY KEY (id)
+    ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+  `;
+  await client.$executeRaw`
+    ALTER TABLE Comment ADD CONSTRAINT Comment_postId_fkey FOREIGN KEY (postId) REFERENCES Post(id) ON DELETE SET NULL ON UPDATE CASCADE;
   `;
 
 	await broker.start()
@@ -57,7 +71,7 @@ async function start() {
 
 // --- TEST CASES ---
 
-const ids =[];
+const ids = [];
 const date = new Date();
 
 // Count of posts
@@ -67,22 +81,28 @@ checker.add("COUNT", () => adapter.count(), res => {
 });
 
 // Insert a new Post
-checker.add("INSERT", () => adapter.insert({ title: "Hello", content: "Post content", votes: 3, status: true, createdAt: date }), doc => {
+checker.add("INSERT", () => adapter.insert({
+    title: "Hello",
+    content: "Post content",
+    votes: 3, status: true,
+    createdAt: date,
+    comments: { create: { message: "comment" } },
+  }), doc => {
 	ids[0] = doc.id;
 	console.log("Saved: ", adapter.entityToObject(doc));
 	return doc.id && doc.title === "Hello" && doc.content === "Post content" && doc.votes === 3 && doc.status === true && doc.createdAt.getTime() === date.getTime();
 });
 
 // Find
-checker.add("FIND", () => adapter.find({}), res => {
+checker.add("FIND", () => adapter.find({ populate: ["comments"] }), res => {
 	console.log(res.map(adapter.entityToObject));
-	return res.length === 1 && res[0].id === ids[0];
+	return res.length === 1 && res[0].id === ids[0] && res[0].comments[0].message === "comment";
 });
 
 // Find by ID
-checker.add("GET", () => adapter.findById(ids[0]), res => {
+checker.add("GET", () => adapter.findById(ids[0], ["comments"]), res => {
 	console.log(adapter.entityToObject(res));
-	return res.id === ids[0];
+	return res.id === ids[0] && res.comments[0].message === "comment";
 });
 
 // Count of posts

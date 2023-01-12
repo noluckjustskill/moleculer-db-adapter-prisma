@@ -8,10 +8,18 @@ datasource db {
 }
 
 model Post {
-  id        String   @id @default(uuid()) @db.VarChar(36)
-  title     String   @db.VarChar(255)
+  id        String    @id @default(uuid()) @db.VarChar(36)
+  title     String    @db.VarChar(255)
   content   String?
   votes     Int
   status    Boolean
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
+  comments  Comment[]
+}
+
+model Comment {
+  id      String  @id @default(uuid()) @db.VarChar(36)
+  message String  @db.VarChar(255)
+  postId  String? @db.VarChar(36)
+  post    Post?   @relation(fields: [postId], references: [id])
 }
